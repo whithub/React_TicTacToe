@@ -19,15 +19,15 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-    if (this._calculateWinner(squares) || squares[i]) {
-      return;
-    }
+
+    if (this._calculateWinner(squares) || squares[i]) { return; }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+
     this.setState({
       history: history.concat([{
         squares: squares,
       }]),
-      xIsNext: !this.state.xIsNext,
+      xIsNext: !this.state.xIsNext
     });
   }
 
@@ -64,9 +64,12 @@ class Game extends React.Component {
 
     let status;
     if (winner) {
-      status = 'We have a winner! Player: ' + winner;
+      status = "We have a winner! Player: " + winner;
+    } else if (history.length === 10) {
+      status = "No winner this time. Try again!";
+      setTimeout(this._newGame, 2000);
     } else {
-      status = 'Your Turn: ' + (this.state.xIsNext ? 'X' : 'O');
+      status = "Your Turn: " + (this.state.xIsNext ? 'X' : 'O');
     }
 
     return (
