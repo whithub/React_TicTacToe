@@ -6,22 +6,27 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
 
+    this._newGame = this._newGame.bind(this);
     this._handleClick = this._handleClick.bind(this);
-    this._calculateWinner = this._calculateWinner.bind(this);
+    // this._calculateWinner = this._calculateWinner.bind(this);
     this.state = {
-      squares: Array(9).fill(null),
+      history: [{ squares: Array(9).fill(null) }],
       xIsNext: true
     };
   }
 
   _handleClick(i) {
-    const squares = this.state.squares.slice();
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
     if (this._calculateWinner(squares) || squares[i]) {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
-      squares: squares,
+      history: history.concat([{
+        squares: squares,
+      }]),
       xIsNext: !this.state.xIsNext,
     });
   }
@@ -46,25 +51,35 @@ class Game extends React.Component {
     return null;
   }
 
+  _newGame() {
+    this.setState({
+      history: [{ squares: Array(9).fill(null) }]
+    });
+  }
+
   render() {
-    const winner = this._calculateWinner(this.state.squares);
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const winner  = this._calculateWinner(current.squares);
+
     let status;
     if (winner) {
-      status = 'Winner: ' + winner;
+      status = 'We have a winner! Player: ' + winner;
     } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      status = 'Your Turn: ' + (this.state.xIsNext ? 'X' : 'O');
     }
 
     return (
       <div className="game">
         <div className="game-board">
           <Board
-            squares={this.state.squares}
+            squares={current.squares}
             onClick={(i) => this._handleClick(i)}
           />
         </div>
         <div className="game-info">
           <div>{status}</div>
+           <button onClick={this._newGame}>New Game</button>
         </div>
       </div>
     );
