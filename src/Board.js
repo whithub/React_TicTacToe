@@ -5,35 +5,17 @@ import './index.css';
 class Board extends React.Component {
   constructor(props) {
     super(props);
-
     this._renderSquare = this._renderSquare.bind(this);
-    this._handleClick  = this._handleClick.bind(this);
-    this.state= {
-      squares: Array(9).fill(null),
-      xIsNext: true
-    }
   }
 
   _renderSquare(i) {
-    return <Square value={this.state.squares[i]}
-                   onClick={() => this._handleClick(i)} />;
-  }
-
-  _handleClick(i) {
-    const squares = this.state.squares.slice();
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
-    this.setState({
-      squares: squares,
-      xIsNext: !this.state.xIsNext
-    });
+    return <Square value={this.props.squares[i]}
+                   onClick={() => this.props.onClick(i)} />;
   }
 
   render() {
-    const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-
     return (
       <div>
-        <div className="status">{status}</div>
         <div className="board-row">
           {this._renderSquare(0)}
           {this._renderSquare(1)}
